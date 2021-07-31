@@ -22,32 +22,7 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest
-public class BeerControllerIT {
-
-    @Autowired
-    WebApplicationContext wac;
-
-    MockMvc mockMvc;
-
-    @MockBean
-    BeerRepository beerRepository;
-
-    @MockBean
-    BeerInventoryRepository beerInventoryRepository;
-
-    @MockBean
-    BreweryService breweryService;
-
-    @MockBean
-    CustomerRepository customerRepository;
-
-    @MockBean
-    BeerService beerService;
-
-    @BeforeEach
-    void setUp() {
-        mockMvc = MockMvcBuilders.webAppContextSetup(wac).apply(springSecurity()).build();
-    }
+public class BeerControllerIT extends BaseIT {
 
     @WithMockUser("Lukasasdf")
     @Test
@@ -61,6 +36,14 @@ public class BeerControllerIT {
     @Test
     void findBeers_withHttpBasic() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/beers/find").with(httpBasic("Lukas","1234")))
+                .andExpect(status().isOk())
+                .andExpect(view().name("beers/findBeers"))
+                .andExpect(model().attributeExists("beer"));
+    }
+
+    @Test
+    void findBeers_permittedWithoutLogin() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/beers/find"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("beers/findBeers"))
                 .andExpect(model().attributeExists("beer"));
