@@ -10,6 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.crypto.password.LdapShaPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MockMvcBuilder;
@@ -25,7 +27,25 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class BeerControllerIT extends BaseIT {
 
     @Test
+    void initCreationFormWithSpring() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/beers/new")
+                .with(httpBasic("Lukas","1234")))
+                .andExpect(status().isOk())
+                .andExpect(view().name("beers/createBeer"))
+                .andExpect(model().attributeExists("beer"));
+    }
+
+    @Test
     void initCreationForm() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/beers/new")
+                .with(httpBasic("user","password")))
+                .andExpect(status().isOk())
+                .andExpect(view().name("beers/createBeer"))
+                .andExpect(model().attributeExists("beer"));
+    }
+
+    @Test
+    void initCreationFormWithScott() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/beers/new")
                 .with(httpBasic("scott","tiger")))
                 .andExpect(status().isOk())
@@ -44,7 +64,8 @@ public class BeerControllerIT extends BaseIT {
 
     @Test
     void findBeers_withHttpBasic() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/beers/find").with(httpBasic("Lukas","1234")))
+        mockMvc.perform(MockMvcRequestBuilders.get("/beers/find")
+                .with(httpBasic("Lukas","1234")))
                 .andExpect(status().isOk())
                 .andExpect(view().name("beers/findBeers"))
                 .andExpect(model().attributeExists("beer"));
