@@ -1,9 +1,12 @@
 package guru.sfg.brewery.config;
 
+import guru.sfg.brewery.security.RestHeaderAuthFilter;
+import guru.sfg.brewery.security.RestUrlParamAuthFilter;
 import guru.sfg.brewery.security.SfgPasswordEncoderFactories;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -18,6 +21,9 @@ import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.password.StandardPasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AndRequestMatcher;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -25,6 +31,11 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        http.addFilterBefore(restHeaderAuthFilter(authenticationManager()),
+                UsernamePasswordAuthenticationFilter.class).csrf().disable();
+        http.addFilterBefore(restUrlParamAuthFilter(authenticationManager()),
+                UsernamePasswordAuthenticationFilter.class);
+
         http.authorizeRequests(authorize -> {
             authorize
                     .antMatchers("/","/webjars/**","/login","/resources/**").permitAll()
@@ -66,12 +77,24 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .roles("USER")
                     .and()
                 .withUser("scott")
-                .password("{bcrypt15}$2a$15$jw/DQu5a54jFKWXChsmMtu.Uo1KFzlLx09/Y.DX2yrxB9ahbxkPym")
+                .password("{bcrypt10}$2a$10$SB5DOCXYmeDwH6YFcYZWaeheu8r6.a7TQ7mLjT7g6Jn9wtgH8Bv8e")
                 .roles("CUSTOMER");
     }
 
     @Bean
     PasswordEncoder passwordEncoder(){
         return SfgPasswordEncoderFactories.createDelegatingPasswordEncoder();
+    }
+
+    public RestHeaderAuthFilter restHeaderAuthFilter(AuthenticationManager authenticationManager){
+        RestHeaderAuthFilter filter = new RestHeaderAuthFilter(new AntPathRequestMatcher(("/api/**")));
+        filter.setAuthenticationManager(authenticationManager);
+        return filter;
+    }
+
+    public RestUrlParamAuthFilter restUrlParamAuthFilter(AuthenticationManager authenticationManager){
+        RestUrlParamAuthFilter filter = new RestUrlParamAuthFilter(new AntPathRequestMatcher(("/api/**")));
+        filter.setAuthenticationManager(authenticationManager);
+        return filter;
     }
 }

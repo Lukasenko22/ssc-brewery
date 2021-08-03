@@ -2,14 +2,11 @@ package guru.sfg.brewery.security;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.authentication.event.InteractiveAuthenticationSuccessEvent;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
-import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.util.StringUtils;
 
@@ -22,19 +19,19 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Slf4j
-public class RestHeaderAuthFilter extends CustomRestAuthFilter {
+public class RestUrlParamAuthFilter extends CustomRestAuthFilter {
 
-    public RestHeaderAuthFilter(RequestMatcher requiresAuthenticationRequestMatcher) {
+    public RestUrlParamAuthFilter(RequestMatcher requiresAuthenticationRequestMatcher) {
         super(requiresAuthenticationRequestMatcher);
     }
 
     @Override
     public String getUsername(HttpServletRequest httpServletRequest) {
-        return httpServletRequest.getHeader("Api-Key");
+        return httpServletRequest.getParameter("Api-Key");
     }
 
     @Override
     public String getPassword(HttpServletRequest httpServletRequest) {
-        return httpServletRequest.getHeader("Api-Secret");
+        return httpServletRequest.getParameter("Api-Secret");
     }
 }

@@ -16,7 +16,7 @@ public class SfgPasswordEncoderFactories {
         encoders.put("ldap", new LdapShaPasswordEncoder());
         encoders.put("noop", NoOpPasswordEncoder.getInstance());
         encoders.put("sha256", new StandardPasswordEncoder());
-        encoders.put("bcrypt15", new BCryptPasswordEncoder(15));
+        encoders.put("bcrypt10", new BCryptPasswordEncoder(10));
 
         return new DelegatingPasswordEncoder(encodingId, encoders);
     }
