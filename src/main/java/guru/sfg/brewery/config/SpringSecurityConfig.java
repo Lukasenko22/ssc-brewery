@@ -38,6 +38,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.authorizeRequests(authorize -> {
             authorize
+                    .antMatchers("/h2-console/**").permitAll()
                     .antMatchers("/","/webjars/**","/login","/resources/**").permitAll()
                     .antMatchers("/beers/find","/beers*").permitAll()
                     .antMatchers(HttpMethod.GET,"/api/v1/beer/**").permitAll()
@@ -49,6 +50,9 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin()
                 .and()
                 .httpBasic();
+
+        // h2 console config
+        http.headers().frameOptions().sameOrigin();
     }
 
       // First approach option

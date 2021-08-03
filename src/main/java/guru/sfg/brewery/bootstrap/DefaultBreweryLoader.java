@@ -17,10 +17,16 @@
 package guru.sfg.brewery.bootstrap;
 
 import guru.sfg.brewery.domain.*;
+import guru.sfg.brewery.domain.security.Authority;
+import guru.sfg.brewery.domain.security.User;
 import guru.sfg.brewery.repositories.*;
+import guru.sfg.brewery.repositories.security.AuthorityRepository;
+import guru.sfg.brewery.repositories.security.UserRepository;
 import guru.sfg.brewery.web.model.BeerStyleEnum;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.Set;
@@ -32,6 +38,7 @@ import java.util.UUID;
  */
 @RequiredArgsConstructor
 @Component
+@Slf4j
 public class DefaultBreweryLoader implements CommandLineRunner {
 
     public static final String TASTING_ROOM = "Tasting Room";
@@ -45,10 +52,53 @@ public class DefaultBreweryLoader implements CommandLineRunner {
     private final BeerOrderRepository beerOrderRepository;
     private final CustomerRepository customerRepository;
 
+    private final UserRepository userRepository;
+    private final AuthorityRepository authorityRepository;
+    private final PasswordEncoder passwordEncoder;
+
     @Override
     public void run(String... args) {
         loadBreweryData();
         loadCustomerData();
+        loadUserData();
+    }
+
+    private void loadUserData() {
+        if (authorityRepository.count() == 0){
+            Authority adminRole = Authority.builder().role("ADMIN").build();
+            Authority userRole = Authority.builder().role("USER").build();
+            Authority customerRole = Authority.builder().role("CUSTOMER").build();
+
+            adminRole = authorityRepository.save(adminRole);
+            userRole = authorityRepository.save(userRole);
+            customerRole = authorityRepository.save(customerRole);
+
+            User user = User.builder()
+                    .username("Lukas")
+                    .password(passwordEncoder.encode("1234"))
+                    .authority(adminRole)
+                    .build();
+
+            userRepository.save(user);
+
+            user = User.builder()
+                    .username("user")
+                    .password(passwordEncoder.encode("password"))
+                    .authority(userRole)
+                    .build();
+
+            userRepository.save(user);
+
+            user = User.builder()
+                    .username("scott")
+                    .password(passwordEncoder.encode("tiger"))
+                    .authority(customerRole)
+                    .build();
+
+            userRepository.save(user);
+        }
+        log.debug("Users loaded: "+userRepository.count());
+        log.debug("Authorities loaded: "+authorityRepository.count());
     }
 
     private void loadCustomerData() {
