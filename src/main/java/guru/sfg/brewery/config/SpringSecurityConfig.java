@@ -21,12 +21,14 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        http.csrf().disable();
         http.authorizeRequests(authorize -> {
             authorize
                     .antMatchers("/h2-console/**").permitAll()
                     .antMatchers("/","/webjars/**","/login","/resources/**").permitAll()
                     .antMatchers("/beers/find","/beers*").permitAll()
                     .antMatchers(HttpMethod.GET,"/api/v1/beer/**").permitAll()
+                    .antMatchers(HttpMethod.DELETE,"/api/v1/beer/**").hasRole("ADMIN")
                     .mvcMatchers(HttpMethod.GET,"/api/v1/beerUpc/{upc}").permitAll();
         }).authorizeRequests()
                 .anyRequest()
