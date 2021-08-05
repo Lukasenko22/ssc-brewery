@@ -28,6 +28,37 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class BeerControllerIT extends BaseIT {
 
     @Test
+    void listBreweriesWithAuthenticationWithCustomerAndAdminRole() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/brewery/breweries")
+                .with(httpBasic("Lukas","1234")))
+                .andExpect(status().isOk())
+                .andExpect(view().name("breweries/index"))
+                .andExpect(model().attributeExists("breweries"));
+    }
+
+    @Test
+    void listBreweriesWithAuthenticationWithCustomerRole() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/brewery/breweries")
+                .with(httpBasic("scott","tiger")))
+                .andExpect(status().isOk())
+                .andExpect(view().name("breweries/index"))
+                .andExpect(model().attributeExists("breweries"));
+    }
+
+    @Test
+    void listBreweriesWithAuthenticationWithoutCustomerRole() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/brewery/breweries")
+                .with(httpBasic("user","password")))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void listBreweriesWithoutAuthentication() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/brewery/breweries"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
     void initCreationFormWithSpring() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/beers/new")
                 .with(httpBasic("Lukas","1234")))
@@ -54,10 +85,28 @@ public class BeerControllerIT extends BaseIT {
                 .andExpect(model().attributeExists("beer"));
     }
 
-    @WithMockUser("Lukasasdf")
     @Test
-    void findBeers() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/beers/find"))
+    void findBeers_Lukas() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/beers/find")
+                .with(httpBasic("Lukas","1234")))
+                .andExpect(status().isOk())
+                .andExpect(view().name("beers/findBeers"))
+                .andExpect(model().attributeExists("beer"));
+    }
+
+    @Test
+    void findBeers_User() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/beers/find")
+                .with(httpBasic("user","password")))
+                .andExpect(status().isOk())
+                .andExpect(view().name("beers/findBeers"))
+                .andExpect(model().attributeExists("beer"));
+    }
+
+    @Test
+    void findBeers_Scott() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/beers/find")
+                .with(httpBasic("scott","tiger")))
                 .andExpect(status().isOk())
                 .andExpect(view().name("beers/findBeers"))
                 .andExpect(model().attributeExists("beer"));
@@ -73,10 +122,8 @@ public class BeerControllerIT extends BaseIT {
     }
 
     @Test
-    void findBeers_permittedWithoutLogin() throws Exception {
+    void findBeers_unauthorizedWithoutLogin() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/beers/find"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("beers/findBeers"))
-                .andExpect(model().attributeExists("beer"));
+                .andExpect(status().isUnauthorized());
     }
 }
