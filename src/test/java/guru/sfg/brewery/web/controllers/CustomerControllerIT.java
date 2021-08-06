@@ -11,6 +11,32 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class CustomerControllerIT extends  BaseIT {
 
     @Test
+    void processCreationForm_adminRole() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post("/customers/new")
+                .param("customerName","Foo Customer")
+                .with(httpBasic("Lukas","1234")))
+                .andExpect(status().is3xxRedirection());
+
+    }
+
+    @Test
+    void processCreationForm_notAdminRole() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post("/customers/new")
+                .param("customerName","Foo Customer2")
+                .with(httpBasic("user","password")))
+                .andExpect(status().isForbidden());
+
+    }
+
+    @Test
+    void processCreationForm_notAuthorized() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post("/customers/new")
+                .param("customerName","Foo Customer3"))
+                .andExpect(status().isUnauthorized());
+
+    }
+
+    @Test
     void listCustomers_forbiddenForOtherThanCustomer() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/customers")
                 .with(httpBasic("user","password")))
