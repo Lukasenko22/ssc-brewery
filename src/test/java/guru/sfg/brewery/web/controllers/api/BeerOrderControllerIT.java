@@ -159,7 +159,7 @@ class BeerOrderControllerIT extends BaseIT {
     }
 
     @Transactional
-    @WithUserDetails("spring")
+    @WithUserDetails("Lukas")
     @Test
     void getByOrderIdADMIN() throws Exception {
         BeerOrder beerOrder = stPeteCustomer.getBeerOrders().stream().findFirst().orElseThrow();
