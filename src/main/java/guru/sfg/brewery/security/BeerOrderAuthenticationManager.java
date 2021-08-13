@@ -1,5 +1,6 @@
-package guru.sfg.brewery.domain.security;
+package guru.sfg.brewery.security;
 
+import guru.sfg.brewery.domain.security.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
