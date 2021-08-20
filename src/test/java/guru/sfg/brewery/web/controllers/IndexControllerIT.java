@@ -14,26 +14,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest
+@SpringBootTest
 public class IndexControllerIT extends BaseIT {
-
-    @MockBean
-    BeerRepository beerRepository;
-
-    @MockBean
-    BeerInventoryRepository beerInventoryRepository;
-
-    @MockBean
-    BreweryService breweryService;
-
-    @MockBean
-    CustomerRepository customerRepository;
-
-    @MockBean
-    BeerService beerService;
-
-    @MockBean
-    BeerOrderService beerOrderService;
 
     @Test
     void getIndex_slash() throws Exception {

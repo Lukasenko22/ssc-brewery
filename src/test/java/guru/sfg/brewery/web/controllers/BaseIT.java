@@ -16,6 +16,9 @@ public abstract class BaseIT {
 
     @BeforeEach
     void baseSetUp() {
-        mockMvc = MockMvcBuilders.webAppContextSetup(wac).apply(springSecurity()).build();
+        mockMvc = MockMvcBuilders
+                .webAppContextSetup(wac)
+                .apply(springSecurity())
+                .build();
     }
 }

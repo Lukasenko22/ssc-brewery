@@ -2,9 +2,11 @@ package guru.sfg.brewery.config;
 
 import guru.sfg.brewery.security.google.Google2faFilter;
 import guru.sfg.brewery.security.SfgPasswordEncoderFactories;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -29,8 +31,11 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.addFilterBefore(google2faFilter, SessionManagementFilter.class);
+
         http.csrf().ignoringAntMatchers("/h2-console/**","/api/**");
-        http.authorizeRequests(authorize -> {
+        http.cors()
+                .and()
+                .authorizeRequests(authorize -> {
             authorize
                     .antMatchers("/h2-console/**")
                         .permitAll()
@@ -98,14 +103,4 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 //                .roles("CUSTOMER");
 //    }
 
-    @Bean
-    PasswordEncoder passwordEncoder(){
-        return SfgPasswordEncoderFactories.createDelegatingPasswordEncoder();
-    }
-
-    // Needed for use with Spring Data JPA SPeL
-    @Bean
-    SecurityEvaluationContextExtension securityEvaluationContextExtension(){
-        return new SecurityEvaluationContextExtension();
-    }
 }
