@@ -1,12 +1,10 @@
 package guru.sfg.brewery.config;
 
+import guru.sfg.brewery.security.google.Google2faFilter;
 import guru.sfg.brewery.security.SfgPasswordEncoderFactories;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -14,8 +12,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.data.repository.query.SecurityEvaluationContextExtension;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import org.springframework.security.web.session.SessionManagementFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @RequiredArgsConstructor
@@ -26,9 +24,11 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserDetailsService userDetailsService;
     private final PersistentTokenRepository persistentTokenRepository;
+    private final Google2faFilter google2faFilter;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        http.addFilterBefore(google2faFilter, SessionManagementFilter.class);
         http.csrf().ignoringAntMatchers("/h2-console/**","/api/**");
         http.authorizeRequests(authorize -> {
             authorize

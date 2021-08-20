@@ -1,4 +1,4 @@
-package guru.sfg.brewery.domain.security.listeners;
+package guru.sfg.brewery.security.listeners;
 
 import guru.sfg.brewery.domain.security.LoginSuccess;
 import guru.sfg.brewery.domain.security.User;

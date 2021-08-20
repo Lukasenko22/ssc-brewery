@@ -1,7 +1,7 @@
 package guru.sfg.brewery.web.controllers.api;
 
 import guru.sfg.brewery.domain.security.User;
-import guru.sfg.brewery.domain.security.perms.order.BeerReadOrderPermissionV2;
+import guru.sfg.brewery.security.perms.order.BeerReadOrderPermissionV2;
 import guru.sfg.brewery.services.BeerOrderService;
 import guru.sfg.brewery.web.model.BeerOrderDto;
 import guru.sfg.brewery.web.model.BeerOrderPagedList;

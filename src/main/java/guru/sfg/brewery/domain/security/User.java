@@ -71,6 +71,14 @@ public class User implements UserDetails, CredentialsContainer {
     @UpdateTimestamp
     private Timestamp lastModifiedDate;
 
+    @Builder.Default
+    private Boolean useGoogle2f = false;
+
+    private String google2FaSecret;
+
+    @Transient
+    private Boolean google2faRequired = true;
+
     @Override
     public boolean isAccountNonExpired() {
         return this.accountNonExpired;

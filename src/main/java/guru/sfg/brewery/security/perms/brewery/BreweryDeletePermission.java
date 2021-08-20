@@ -1,4 +1,4 @@
-package guru.sfg.brewery.domain.security.perms.order;
+package guru.sfg.brewery.security.perms.brewery;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 
@@ -6,6 +6,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @Retention(RetentionPolicy.RUNTIME)
-@PreAuthorize("hasAnyAuthority('order.read', 'customer.order.read')")
-public @interface BeerReadOrderPermissionV2 {
+@PreAuthorize("hasAuthority('brewery.delete')")
+public @interface BreweryDeletePermission {
 }

@@ -1,4 +1,4 @@
-package guru.sfg.brewery.domain.security.perms.brewery;
+package guru.sfg.brewery.security.perms.brewery;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 

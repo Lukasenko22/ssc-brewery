@@ -1,4 +1,4 @@
-package guru.sfg.brewery.domain.security.perms.order;
+package guru.sfg.brewery.security.perms.order;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 
@@ -6,8 +6,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @Retention(RetentionPolicy.RUNTIME)
-@PreAuthorize("hasAuthority('order.pickup') OR " +
-        "hasAuthority('customer.order.pickup') AND " +
+@PreAuthorize("hasAuthority('order.create') OR " +
+        "hasAuthority('customer.order.create') AND " +
         "@beerOrderAuthenticationManager.customerIdMatches(authentication,#customerId)")
-public @interface PickupBeerOrderPermission {
+public @interface BeerCreateOrderPermission {
 }

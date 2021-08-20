@@ -1,10 +1,9 @@
-package guru.sfg.brewery.domain.security.listeners;
+package guru.sfg.brewery.security.listeners;
 
 import guru.sfg.brewery.domain.security.LoginFailure;
 import guru.sfg.brewery.domain.security.User;
 import guru.sfg.brewery.repositories.security.LoginFailureRepository;
 import guru.sfg.brewery.repositories.security.UserRepository;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
